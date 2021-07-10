@@ -27,15 +27,21 @@ export class MembersService {
     const member = this.members.find(
       (x) => x.username == username.toLowerCase()
     );
-    if (member!==undefined) return of(member);
+    if (member !== undefined) return of(member);
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
   updateMember(member: Member) {
     return this.http.put(this.baseUrl + 'users', member).pipe(
-      map(()=>{
-        const index=this.members.indexOf(member);
-        this.members[index]=member;
+      map(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = member;
       })
     );
+  }
+  setMainPhoto(photoId: number) {
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photoId, {});
+  }
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId, {});
   }
 }
