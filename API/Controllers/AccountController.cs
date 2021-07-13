@@ -44,7 +44,7 @@ namespace API.Controllers
             {
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user),
-                KnowAs=user.KnownAs
+                KnownAs=user.KnownAs
             };
         }
 
@@ -66,7 +66,7 @@ namespace API.Controllers
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(_ => _.IsMain)?.Url,
-                KnowAs=user.KnownAs
+                KnownAs=user.KnownAs
             };
         }
         #endregion
