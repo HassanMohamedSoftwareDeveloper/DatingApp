@@ -17,16 +17,21 @@
           <li class="nav-item">
             <a class="nav-link" routerLinkActive="active" routerLink="/messages">Messages</a>
           </li>
+          <li *appHasRole='["Admin","Moderator"]' class="nav-item">
+            <a class="nav-link" routerLinkActive="active" routerLink="/admin">Admin</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" routerLinkActive="active" routerLink="/errors">Errors</a>
           </li>
+
+
         </ng-container>
       </ul>
       <div >
         <ng-container *ngIf="(accountService.currentUser$ |async) as user; else elseTemplate">
           <div class="dropdown" dropdown>
             <img [src]="user.photoUrl||'./assets/user.png'" [alt]="user.username">
-            <a class="dropdown-toggle text-light ml-2" dropdownToggle>Welcome {{user.knownAs|titlecase}}<span class="caret"></span></a>
+            <a class="dropdown-toggle text-light ml-2" dropdownToggle>Welcome {{user.knownAs||user.username|titlecase}}<span class="caret"></span></a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
               <a routerLink='/member/edit/' class="dropdown-item">Edit Profile</a>
               <div class="dropdown-divider"></div>
