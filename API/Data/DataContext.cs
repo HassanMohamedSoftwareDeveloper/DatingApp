@@ -36,6 +36,7 @@ namespace API.Data
             modelBuilder.Entity<Message>().HasOne(_ => _.Recipient).WithMany(_ => _.MessagesReceived).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Message>().HasOne(_ => _.Sender).WithMany(_ => _.MessagesSent).OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
             modelBuilder.ApplyUtcDateTimeConverter();
         }
     }

@@ -44,7 +44,9 @@ namespace API.Controllers
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            return await unitOfWork.UserRepository.GetMemberAsync(username);
+            var currentUsername = User.GetUserName();
+            return await unitOfWork.UserRepository.GetMemberAsync(username,
+            isCurrentUser: currentUsername == username);
         }
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
@@ -58,7 +60,8 @@ namespace API.Controllers
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
-            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUserName());
+            var user = await
+           unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUserName());
             var result = await photoService.AddPhotoAsync(file);
             if (result.Error != null) return BadRequest(result.Error.Message);
             var photo = new Photo
@@ -66,14 +69,16 @@ namespace API.Controllers
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
             };
-            if (user.Photos.Count == 0)
-            {
-                photo.IsMain = true;
-            }
             user.Photos.Add(photo);
             if (await unitOfWork.Complete())
-                return CreatedAtRoute("GetUser", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
-            return BadRequest("Problem adding photo");
+            {
+                return CreatedAtRoute("GetUser", new
+                {
+                    username =
+               user.UserName
+                }, mapper.Map<PhotoDto>(photo));
+            }
+            return BadRequest("Problem addding photo");
         }
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
