@@ -56,13 +56,13 @@ namespace API.Data
         {
             return await dataContext.Users.Include(_ => _.Photos).ToListAsync();
         }
-        public async Task<bool> SaveAllAsync()
-        {
-            return (await dataContext.SaveChangesAsync()) > 0;
-        }
         public void Update(AppUser user)
         {
             dataContext.Entry(user).State = EntityState.Modified;
+        }
+        public async Task<string> GetUserGender(string username)
+        {
+            return (await dataContext.Users.Where(_ => _.UserName == username).Select(x=>x.Gender).FirstOrDefaultAsync());
         }
     }
 }
