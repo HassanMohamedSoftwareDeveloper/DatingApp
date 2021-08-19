@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
@@ -78,8 +79,11 @@ namespace API.Data
         public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
         {
             var messages = await dataContext.Messages
-            .Where(_ => _.Recipient.UserName == currentUsername && _.Sender.UserName == recipientUsername.ToLower() && _.RecipientDeleted == false
-            || _.Recipient.UserName == recipientUsername.ToLower() && _.Sender.UserName == currentUsername && _.SenderDeleted == false)
+            .Where(_ => _.Recipient.UserName == currentUsername && _.Sender.UserName == recipientUsername.ToLower()
+             && _.RecipientDeleted == false
+            || _.Recipient.UserName == recipientUsername.ToLower() && _.Sender.UserName == currentUsername 
+            && _.SenderDeleted == false)
+            .MarkUnreadAsRead(currentUsername)
             .OrderBy(_ => _.MessageSent)
             .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
             .ToListAsync();
